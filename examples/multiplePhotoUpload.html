@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+  <head>
+    <script
+      src="https://thunkable.github.io/webviewer-extension/thunkableWebviewerExtension.js"
+      type="text/javascript"
+    ></script>
+  </head>
+  <body>
+    <input type="file" multiple="multiple" accept="image/jpeg, image/png, image/jpg">  </body>
+</html>
+  
+<script type="module">
+  let imagesArray = [];
+  let urlArray = [];
+  let url, formData, apiKey;
+  
+  input.addEventListener("change", () => {
+    const files = input.files
+    for (let i = 0; i < files.length; i++) {
+      imagesArray.push(files[i])
+    }
+    sendtoCloudinary();
+  })
+  
+  async function sendtoCloudinary(){
+
+    for (const image of imagesArray) {
+      formData.set('file', image);
+
+      const config = {
+            method: 'POST',
+            body: formdata,
+      };
+
+      const result = await fetch(url, config);
+      const json = await result.json();
+
+      let key = json.original_filename;
+      let obj = {};
+      obj[key] = json.url;
+
+      if (result.status === 200) {
+        urlArray.push(obj);
+      }
+      else {
+        console.log(json.error.message);
+        return;
+      }
+    }
+    
+    ThunkableWebviewerExtension.postMessage(
+      JSON.stringify(urlArray)
+    );
+
+    urlArray = [];
+  }
+
+  function setKey(cloudName, apiKey, preset) {
+    url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+    formData = new FormData();
+
+    formData.append('api_key', apiKey);
+    data.append("upload_preset", preset);
+  }
+
+  ThunkableWebviewerExtension.receiveMessage(function (message, callback) {
+    try{
+      const msgFromApp = JSON.parse(message);
+
+      if(msgFromApp.type === 'setKey') {
+        setKey(msgFromApp.cloudName, msgFromApp.apiKey, msgFromApp.preset);
+      }
+
+    }
+    catch (e) {
+      console.error(e);
+      console.error(
+        "An error occurred. Message probably wasn't valid JSON string"
+      );
+    }
+  });
+
+  ThunkableWebviewerExtension.postMessage(
+    JSON.stringify({ type: "page loaded" })
+  );
+</script>
