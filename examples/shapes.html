@@ -1,0 +1,97 @@
+<html>
+  <body style="margin: 0px">
+    <canvas id="canvas" height="10" width="10"></canvas>
+  </body>
+</html>
+
+<script
+  src="https://thunkable.github.io/webviewer-extension/thunkableWebviewerExtension.js"
+  type="text/javascript"
+></script>
+
+<script type="text/javascript">
+
+  const drawCircle = function(radius, startAngle, endAngle, canvas, ctx){
+    const startAngleInDegrees = (startAngle - 90) * 0.01745329;
+    const endAngleInDegrees = (endAngle - 90) * 0.01745329;
+    ctx.arc(canvas.width/2, canvas.height/2, radius, startAngleInDegrees, endAngleInDegrees);
+    ctx.stroke();
+  }
+
+  const drawRectangle = function(height, width, canvas, ctx){
+    const cornerX = (canvas.width - width)/2;
+    const cornerY = (canvas.height - height)/2;
+    ctx.rect(cornerX, cornerY, width, height);
+  }
+
+  const drawTriangle = function(radius, canvas, ctx){
+    const originX = canvas.width/2;
+    const originY = canvas.height/2;
+    const edge = Math.sqrt(radius*radius + radius*radius - 2 * radius * radius * Math.cos(2.094395));
+    const halfheight = Math.sqrt(radius*radius - (edge/2)*(edge/2));
+    ctx.moveTo(originX + edge/2, originY + halfheight);
+    ctx.lineTo(originX - edge/2, originY + halfheight);
+    ctx.lineTo(originX, originY - radius);
+    ctx.lineTo(originX + edge/2, originY + halfheight);
+  }
+
+  const fillShape = function(color, ctx){
+    ctx.fillStyle = color;
+    ctx.fill('evenodd');
+  }
+
+  const setRadius = function(borderSize, borderColor, ctx){
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = borderSize;
+  }
+
+  const drawShape = function (info) {
+    const canvas = document.getElementById("canvas");
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    console.log(info);
+
+    ctx.beginPath();
+    ctx.moveTo(canvas.width/2, canvas.height/2);
+
+    setRadius(info.BorderSize, info.BorderColor, ctx);
+
+    switch (info.Shape?.toLowerCase()){
+      case 'circle':
+        drawCircle(info.Radius, info.StartAngle, info.EndAngle, canvas, ctx);
+        break;
+      case 'rectangle':
+        drawRectangle(info.Height, info.Width, canvas, ctx);
+        break;
+      case 'rect':
+        drawRectangle(info.Height, info.Width, canvas, ctx);
+        break;
+      case 'triangle':
+        drawTriangle(info.Radius, canvas, ctx);
+        break;
+      default: 
+        drawCircle(info.Radius, info.StartAngle, info.EndAngle, canvas, ctx);
+    }
+
+    fillShape(info.Color, ctx);
+    ctx.closePath();
+
+    ctx.fillStyle = info[Color];
+    ctx.fill(region, "evenodd");
+  };
+
+  ThunkableWebviewerExtension.receiveMessage(function (message) {
+    try {
+      const msgFromApp = JSON.parse(message);
+      if (msgFromApp.type === "draw") {
+        drawShape(msgFromApp.info);
+      }
+    } catch (e) {}
+  });
+  ThunkableWebviewerExtension.postMessage(
+    JSON.stringify({ type: "pageLoaded" })
+  );
+</script>
