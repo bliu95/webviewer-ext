@@ -14,6 +14,7 @@
     onValue,
     push,
     onChildAdded,
+    onChildChanged
   } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
   const pathToUnsubscribe = {};
@@ -67,6 +68,23 @@
             ThunkableWebviewerExtension.postMessage(
               JSON.stringify({
                 type: "childAddedToList",
+                path: msgFromApp.path,
+                value: data.val(),
+                key: data.key,
+              })
+            );
+          }
+        );
+      } else if (msgFromApp.type === "addChildChangedListener") {
+        if (pathToChildAddUnsubscribe[msgFromApp.path]) return;
+        const db = database;
+        const pathRef = ref(db, msgFromApp.path);
+        pathToChildAddUnsubscribe[msgFromApp.path] = onChildChanged(
+          pathRef,
+          (data) => {
+            ThunkableWebviewerExtension.postMessage(
+              JSON.stringify({
+                type: "childChangedToList",
                 path: msgFromApp.path,
                 value: data.val(),
                 key: data.key,
