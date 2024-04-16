@@ -67,6 +67,10 @@
   }
 
   ThunkableWebviewerExtension.receiveMessage(function (message, callback) {
+    if(message.type === 'should-intercept-webauthn-request') {
+      return;
+    }
+    
     try{
       const msgFromApp = JSON.parse(message);
 

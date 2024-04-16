@@ -24,6 +24,10 @@
   // when we get a message from the app, parse it
   // and then do the action specified by the type
   ThunkableWebviewerExtension.receiveMessage(function (message, callback) {
+    if(message.type === 'should-intercept-webauthn-request') {
+      return;
+    }
+    
     try {
       const msgFromApp = JSON.parse(message);
       if (msgFromApp.type === "initializeFirebase") {
