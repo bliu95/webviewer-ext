@@ -63,14 +63,14 @@
     formData = new FormData();
 
     formData.append('api_key', apiKey);
-    data.append("upload_preset", preset);
+    formData.append("upload_preset", preset);
   }
 
   ThunkableWebviewerExtension.receiveMessage(function (message, callback) {
     if(message.type === 'should-intercept-webauthn-request') {
       return;
     }
-    
+
     try{
       const msgFromApp = JSON.parse(message);
 
