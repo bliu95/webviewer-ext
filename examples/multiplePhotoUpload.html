@@ -67,7 +67,7 @@
   }
 
   ThunkableWebviewerExtension.receiveMessage(function (message, callback) {
-    if(message?.message?.type === 'should-intercept-webauthn-request') {
+    if(message.type === 'op-window-direct-response') {
       return;
     }
 
