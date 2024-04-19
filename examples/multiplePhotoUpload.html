@@ -8,7 +8,7 @@
   </head>
   <body>
     <input id="input" type="file" multiple="multiple" accept="image/jpeg, image/png, image/jpg" style="display: none;"> 
-    <button id="inputButton" onclick="document.getElementById('input').click();"></button>>
+    <button onclick="document.getElementById('input').click();"></button>>
   </body>
 </html>
   
@@ -78,10 +78,6 @@
 
       if(msgFromApp.type === 'setKey') {
         setKey(msgFromApp.cloudName, msgFromApp.apiKey, msgFromApp.preset);
-      }
-
-      if(msgFromApp.type === 'upload') {
-        document.getElementById('inputButton').click();
       }
 
     }
