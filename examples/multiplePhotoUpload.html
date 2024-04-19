@@ -70,7 +70,7 @@
   }
 
   ThunkableWebviewerExtension.receiveMessage(function (message, callback) {
-    if(message.type === 'op-window-direct-response') {
+    if(message.type === 'op-window-direct-response' || message.type === 'op-window-direct-request') {
       return;
     }
 
