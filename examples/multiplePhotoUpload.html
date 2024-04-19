@@ -7,7 +7,9 @@
     ></script>
   </head>
   <body>
-    <input id="input" type="file" multiple="multiple" accept="image/jpeg, image/png, image/jpg" style="display: none;">  </body>
+    <input id="input" type="file" multiple="multiple" accept="image/jpeg, image/png, image/jpg" style="display: none;"> 
+    <button id="inputButton" onclick="document.getElementById('input').click();"></button>>
+  </body>
 </html>
   
 <script type="module">
@@ -52,7 +54,7 @@
     }
     
     ThunkableWebviewerExtension.postMessage(
-      JSON.stringify(urlArray)
+      JSON.stringify({type: "files", files: urlArray})
     );
 
     urlArray = [];
@@ -79,7 +81,7 @@
       }
 
       if(msgFromApp.type === 'upload') {
-        document.getElementById('input').click();
+        document.getElementById('inputButton').click();
       }
 
     }
