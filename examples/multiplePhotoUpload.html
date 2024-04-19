@@ -15,7 +15,7 @@
   
 <script type="module">
   let imagesArray = [];
-  let urlArray = [];
+  let uploadedPhotos = {};
   let url, formData, apiKey;
   
   const input = document.getElementById("input");
@@ -29,7 +29,6 @@
   })
   
   async function sendtoCloudinary(){
-
     for (const image of imagesArray) {
       formData.set('file', image);
 
@@ -41,12 +40,8 @@
       const result = await fetch(url, config);
       const json = await result.json();
 
-      let key = json.original_filename;
-      let obj = {};
-      obj[key] = json.url;
-
       if (result.status === 200) {
-        urlArray.push(obj);
+        uploadedPhotos[json.original_filename] = json.url;
       }
       else {
         console.log(json.error.message);
@@ -55,10 +50,10 @@
     }
     
     ThunkableWebviewerExtension.postMessage(
-      JSON.stringify({type: "files", files: urlArray})
+      JSON.stringify({type: "files", files: uploadedPhotos})
     );
 
-    urlArray = [];
+    uploadedPhotos = {};
   }
 
   function setKey(cloudName, apiKey, preset) {
