@@ -7,11 +7,27 @@
       type="text/javascript"
     ></script>
   </head>
-  <body>
+  <body style="margin: 0px">
     <input id="input" type="file" multiple="multiple" accept="image/jpeg, image/png, image/jpg" style="display: none;"> 
-    <button onclick="document.getElementById('input').click();"> Upload</button>
+
+      <button id="thunkableButton" onmousedown="mousedown()" onmouseup="mouseUp()" onclick="document.getElementById('input').click();"
+        style="color: #FFFFFF; background-color: #5D7AFC; font-size: 16px; width: 311px; height: 49px; border-radius: 15px; text-align: center; line-height: 49px; border-color: transparent" 
+      > Upload </button>
   </body>
 </html>
+
+<script>
+  document.getElementById("thunkableButton").style.width = window.innerWidth;
+  document.getElementById("thunkableButton").style.height = window.innerHeight;
+
+  function mousedown(){
+    document.getElementById("demo").style.opacity = "0.4";
+  }
+
+  function mouseUp(){
+    document.getElementById("demo").style.opacity = "1";
+  }
+</script>
   
 <script type="module">
   let imagesArray = [];
@@ -76,6 +92,48 @@
         setKey(msgFromApp.cloudName, msgFromApp.apiKey, msgFromApp.preset);
       }
 
+    }
+    catch (e) {
+      console.error(e);
+      console.error(
+        "An error occurred. Message probably wasn't valid JSON string"
+      );
+    }
+
+    //Thunkable Like Button
+    try{
+      switch (msgFromApp.type) {
+        case 'setText':
+          document.getElementById('thunkableButton').innerHTML = msgFromApp.text;
+          break;
+        case 'setFont':
+          document.getElementById('thunkableButton').style.fontFamily = msgFromApp.font;
+          break;
+        case 'setTextColor':
+          document.getElementById('thunkableButton').style.color = msgFromApp.color;
+          break;
+        case 'setFontWeight':
+          document.getElementById('thunkableButton').style.fontWeight = msgFromApp.fontWeight;
+          break;
+        case 'setFontSize':
+          document.getElementById('thunkableButton').style.fontSize = msgFromApp.fontSize;
+          break;
+        case 'setBackgroundColor':
+          document.getElementById('thunkableButton').style.background = msgFromApp.backgroundColor;
+          break;
+        case 'setBorderStyle':
+          document.getElementById('thunkableButton').style.borderStyle = msgFromApp.borderStyle;
+          break;
+        case 'setBorderColor':
+          document.getElementById('thunkableButton').style.borderColor = msgFromApp.borderColor;
+          break;
+        case 'setBorderWidth':
+          document.getElementById('thunkableButton').style.borderWidth = msgFromApp.borderWidth;
+          break;
+        case 'setBorderRadius':
+          document.getElementById('thunkableButton').style.borderRadius = msgFromApp.borderRadius;
+          break;
+      }
     }
     catch (e) {
       console.error(e);
