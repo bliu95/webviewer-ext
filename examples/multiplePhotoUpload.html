@@ -93,16 +93,7 @@
         setKey(msgFromApp.cloudName, msgFromApp.apiKey, msgFromApp.preset);
       }
 
-    }
-    catch (e) {
-      console.error(e);
-      console.error(
-        "An error occurred. Message probably wasn't valid JSON string"
-      );
-    }
-
-    //Thunkable Like Button
-    try{
+      //Thunkable Like Button
       switch (msgFromApp.type) {
         case 'setText':
           document.getElementById('thunkableButton').innerHTML = msgFromApp.text;
