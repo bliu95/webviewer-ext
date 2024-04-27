@@ -60,6 +60,12 @@
         document.getElementById("picker").innerHTML = "";
       }
 
+      if(msgFromApp.type === "getSelected") {
+        ThunkableWebviewerExtension.postMessage(
+          JSON.stringify({ type: "selected", value: document.getElementById('picker').options[document.getElementById('picker').selectedIndex].text })
+        ); 
+      }
+
       //Thunkable Like List
       switch (msgFromApp.type) {
         case 'setFont':
