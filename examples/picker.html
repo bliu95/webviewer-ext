@@ -59,13 +59,12 @@
       if(msgFromApp.type == "clearList") {
         document.getElementById("picker").innerHTML = "";
       }
-      
-      // if(msgFromApp.type === "getSelected") {
-      //   ThunkableWebviewerExtension.postMessage(
-      //     JSON.stringify({ type: "selected", value: document.getElementById('picker').options[document.getElementById('picker').selectedIndex].text })
-      //   ); 
-        
-      // }
+
+      if(msgFromApp.type === "getSelected") {
+        ThunkableWebviewerExtension.postMessage(
+          JSON.stringify({ type: "selected", value: document.getElementById('picker').options[document.getElementById('picker').selectedIndex].text })
+        ); 
+      }
 
       //Thunkable Like List
       switch (msgFromApp.type) {
@@ -105,12 +104,6 @@
       );
     }
     });
-
-  ThunkableWebviewerExtension.receiveMessageWithReturnValue(function(message, callback) {
-    if (message === 'getSelected') {
-        callback(JSON.stringify({ type: "selected", value: document.getElementById('picker').options[document.getElementById('picker').selectedIndex].text }));
-    }
-  });
 
   ThunkableWebviewerExtension.postMessage(
     JSON.stringify({ type: "page loaded" })
