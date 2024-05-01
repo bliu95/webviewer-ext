@@ -62,7 +62,7 @@
 
       if(msgFromApp.type === "getSelected") {
         ThunkableWebviewerExtension.postMessage(
-          JSON.stringify({ type: "selected", value: document.getElementById('picker').options[document.getElementById('picker').selectedIndex].text })
+          JSON.stringify({ type: "selected", value: JSON.stringify(document.getElementById('picker').options[document.getElementById('picker').selectedIndex].text) })
         ); 
       }
 
