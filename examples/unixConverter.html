@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <script
+      src="https://thunkable.github.io/webviewer-extension/thunkableWebviewerExtension.js"
+      type="text/javascript"
+    ></script>
+  </head>
+</html>
+  
+<script type="module">
+  ThunkableWebviewerExtension.receiveMessage(function (message, callback) {
+    if(message.type === 'op-window-direct-response' || message.type === 'op-window-direct-request') {
+      return;
+    }
+
+    try{
+      const msgFromApp = JSON.parse(message);
+
+      if(msgFromApp.type === 'convert') {
+        const dateTime = new Date(msgFromApp.date + " " + msgFromApp.time);
+        const unixTime = Math.floor(dateTime.getTime()/100000);  //4 zeros gives seconds + and 6 zeros give minutes +
+        ThunkableWebviewerExtension.postMessage(
+          JSON.stringify({ time: unixTime })
+        );
+      }
+
+    }
+    catch (e) {
+      console.error(e);
+      console.error(
+        "An error occurred. Message probably wasn't valid JSON string"
+      );
+    }
+  });
+</script>
