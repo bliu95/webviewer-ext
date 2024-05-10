@@ -11,7 +11,7 @@
 </html>
   
 <script type="module">
-  ThunkableWebviewerExtension.receiveMessage(function (message, callback) {
+  ThunkableWebviewerExtension.receiveMessageWithReturnValue(function(message, callback) {
     if(message.type === 'op-window-direct-response' || message.type === 'op-window-direct-request') {
       return;
     }
@@ -22,17 +22,17 @@
       if(msgFromApp.type === 'convert') {
         const dateTime = new Date(msgFromApp.date + " " + msgFromApp.time);
         const unixTime = Math.floor(dateTime.getTime()/100000);  //4 zeros gives seconds + and 6 zeros give minutes +
-        ThunkableWebviewerExtension.postMessage(
+        callback(
           JSON.stringify({ time: unixTime })
         );
       }
-
     }
     catch (e) {
       console.error(e);
       console.error(
         "An error occurred. Message probably wasn't valid JSON string"
       );
+      callback("An error occurred. Message probably wasn't valid JSON string");
     }
   });
 </script>
