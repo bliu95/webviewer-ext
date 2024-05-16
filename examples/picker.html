@@ -1,0 +1,112 @@
+<html>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<body>
+  <select id="picker" class="form-control" onfocus='this.size=5;' onblur='this.size=1;' onchange='this.size=1; this.blur(); select();'>
+  </select>
+</body>
+
+<script
+  src="https://thunkable.github.io/webviewer-extension/thunkableWebviewerExtension.js"
+  type="text/javascript"
+></script>
+
+<script>
+  document.getElementById("picker").style.width = window.innerWidth + "px";
+  document.getElementById("picker").style.height = window.innerHeight + "px";
+</script>
+
+<script type="text/javascript">
+    function select() {
+      ThunkableWebviewerExtension.postMessage(
+        JSON.stringify({ type: "selected", value: document.getElementById('picker').options[document.getElementById('picker').selectedIndex].text })
+      ); 
+    }
+
+    function addItemToList(item) {
+      var x = document.getElementById("picker");
+      var option = document.createElement("option");
+      option.value = "";
+      option.text = item;
+      x.add(option);
+    }
+
+    function setList(list) {
+      document.getElementById("picker").innerHTML = "";
+
+      let textList = list.split(",");
+      for (const item in textList) {
+        addItemToList(textList[item]);
+      }
+    }
+
+    ThunkableWebviewerExtension.receiveMessage(function (message, callback) {
+    if(message.type === 'op-window-direct-response' || message.type === 'op-window-direct-request') {
+      return;
+    }
+
+    try{
+      const msgFromApp = JSON.parse(message);
+
+      if(msgFromApp.type === "setList") {
+        setList(msgFromApp.list);
+      }
+
+      if(msgFromApp.type === "addToList") {
+        addItemToList(msgFromApp.item);
+      }
+
+      if(msgFromApp.type == "clearList") {
+        document.getElementById("picker").innerHTML = "";
+      }
+
+      if(msgFromApp.type === "getSelected") {
+        ThunkableWebviewerExtension.postMessage(
+          JSON.stringify({ type: "selected", value: JSON.stringify(document.getElementById('picker').options[document.getElementById('picker').selectedIndex].text) })
+        ); 
+      }
+
+      //Thunkable Like List
+      switch (msgFromApp.type) {
+        case 'setFont':
+          document.getElementById('picker').style.fontFamily = msgFromApp.font;
+          break;
+        case 'setTextColor':
+          document.getElementById('picker').style.color = msgFromApp.color;
+          break;
+        case 'setFontWeight':
+          document.getElementById('picker').style.fontWeight = msgFromApp.fontWeight;
+          break;
+        case 'setFontSize':
+          document.getElementById('picker').style.fontSize = msgFromApp.fontSize;
+          break;
+        case 'setBackgroundColor':
+          document.getElementById('picker').style.background = msgFromApp.backgroundColor;
+          break;
+        case 'setBorderStyle':
+          document.getElementById('picker').style.borderStyle = msgFromApp.borderStyle;
+          break;
+        case 'setBorderColor':
+          document.getElementById('picker').style.borderColor = msgFromApp.borderColor;
+          break;
+        case 'setBorderWidth':
+          document.getElementById('picker').style.borderWidth = msgFromApp.borderWidth;
+          break;
+        case 'setBorderRadius':
+          document.getElementById('picker').style.borderRadius = msgFromApp.borderRadius;
+          break;
+      }
+    }
+    catch (e) {
+      console.error(e);
+      console.error(
+        "An error occurred. Message probably wasn't valid JSON string"
+      );
+    }
+    });
+
+  ThunkableWebviewerExtension.postMessage(
+    JSON.stringify({ type: "page loaded" })
+  );  
+</script>
+</html>
