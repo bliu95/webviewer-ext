@@ -23,7 +23,7 @@
         const dateTime = new Date(msgFromApp.date + " " + msgFromApp.time);
         const unixTime = Math.floor(dateTime.getTime()/100000);  //4 zeros gives seconds + and 6 zeros give minutes +
         callback(
-          JSON.stringify({ time: unixTime })
+          JSON.stringify({ time: unixTime , timeDate: Date(unixTime)})
         );
       }
     }
