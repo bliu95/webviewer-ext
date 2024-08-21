@@ -21,8 +21,8 @@
 
       if(msgFromApp.type === 'convert') {
         const dateTime = new Date(msgFromApp.date + " " + msgFromApp.time);
-        const unixTime = Math.floor(dateTime.getTime()/100000);  //4 zeros gives seconds + and 6 zeros give minutes +
-        const dateTimeInUnixTime = Date(unixTime);
+        const unixTime = Math.floor(dateTime.getTime()/1000);
+        const dateTimeInUnixTime = new Date(dateTime.getTime());
         callback(
           JSON.stringify({ time: unixTime , timeDate: dateTimeInUnixTime})
         );
