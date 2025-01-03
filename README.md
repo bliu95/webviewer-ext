@@ -1,4 +1,4 @@
-# Thunkable Web Viewer Extensions
+# Thunkable Web Viewer/JS Web Bridges Extensions
 
 Send a message between your Thunkable app and your website in a Web Viewer. It is highly recommended to do all of this within a module.
 
