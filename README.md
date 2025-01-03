@@ -1,18 +1,13 @@
 # Thunkable Web Viewer Extensions
 
-Send a message between your Thunkable app and your website in a Web Viewer.
+Send a message between your Thunkable app and your website in a Web Viewer. It is highly recommended to do all of this within a module.
 
 ## Examples
 
-### Basic message passing
-Project: https://x.thunkable.com/copy/5b28688450b735c49fd0dcd9e03db8ba
+### Picker
+Project Link: [click here](https://x.thunkable.com/projectPage/667997739130ed02ed8dd705)
 
-Website code: https://github.com/thunkable/webviewer-extension/blob/master/examples/simple.html
-
-### Simple graph
-Project: https://x.thunkable.com/copy/25f2795fa24771425ca0408f3fa039c3
-
-Website code: https://github.com/thunkable/webviewer-extension/blob/master/examples/graph.html
+The module is called Picker and is within the project above. You can see the inside of the module if you do "See inside" if you hover the 3 dots of the module. The code for Picker is in this GitHub under examples called "picker.html".
 
 ## Setup
 
