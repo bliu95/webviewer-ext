@@ -1,0 +1,28 @@
+<script
+  src="https://thunkable.github.io/webviewer-extension/thunkableWebviewerExtension.js"
+  type="text/javascript"
+></script>
+
+<script type="text/javascript">
+  ThunkableWebviewerExtension.receiveMessageWithReturnValue(function(message, callback) {
+    try {
+      const msgFromApp = JSON.parse(message);
+      let json_obj;
+
+      if (msgFromApp.type === "get") {
+        json_obj = JSON.parse(Get(msgFromApp.url));
+        callback(
+          JSON.stringify({ data: json_obj })
+        );
+      }
+
+    } catch (e) {}
+  });
+
+  function Get(yourUrl){
+    var Httpreq = new XMLHttpRequest(); // a new request
+    Httpreq.open("GET",yourUrl,false);
+    Httpreq.send(null);
+    return Httpreq.responseText;          
+  }
+</script>
