@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,51 +7,59 @@
       src="https://thunkable.github.io/webviewer-extension/thunkableWebviewerExtension.js"
       type="text/javascript"
     ></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@xano/js-sdk@latest/dist/xano.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@xano/js-sdk@latest/dist/xano.min.js"
+    ></script>
   </head>
 </html>
 
 <script type="module">
   let client, channel;
 
-  function initXano(url, hash, channelName){
+  function initXano(url, hash, channelName) {
     client = new XanoClient({
       baseUrl: url,
-      realtimeConnectionHash: hash
+      realtimeConnectionHash: hash,
     });
 
     channel = client.realtime.channel(channelName);
   }
 
-  channel.on('message', (message) => {
-    ThunkableWebviewerExtension.postMessage(JSON.stringify({
-      type: "message",
-      response: message
-    }))
-  });
-
   ThunkableWebviewerExtension.receiveMessage(function (message, callback) {
-  if (message.type === 'should-intercept-webauthn-request' || message.type === 'op-window-direct-response'){
-    return;
-  }
-
-  try{
-    const msgFromApp = JSON.parse(message);
-
-    if(msgFromApp.type === 'initializeMap') {
-      initXano(parseFloat(msgFromApp.lat), parseFloat(msgFromApp.long), parseFloat(msgFromApp.zoom), msgFromApp.mapKey, msgFromApp.content);
+    if (
+      message.type === "should-intercept-webauthn-request" ||
+      message.type === "op-window-direct-response"
+    ) {
+      return;
     }
 
-    if(msgFromApp.type === 'send') {
-      channel.send(msgFromApp.msg);
+    try {
+      const msgFromApp = JSON.parse(message);
+
+      if (msgFromApp.type === "initializeXano") {
+        initXano(msgFromApp.url, msgFromApp.hash, msgFromApp.channelName);
+
+        channel.on("message", (message) => {
+          ThunkableWebviewerExtension.postMessage(
+            JSON.stringify({
+              type: "message",
+              response: message,
+            })
+          );
+        });
+      }
+
+      if (msgFromApp.type === "send") {
+        channel.send(msgFromApp.msg);
+      }
+    } catch (e) {
+      console.error(e);
+      console.error(
+        "An error occurred. Message probably wasn't valid JSON string"
+      );
     }
-  }
-  catch (e) {
-    console.error(e);
-    console.error(
-      "An error occurred. Message probably wasn't valid JSON string"
-    );
-  }});
+  });
 
   ThunkableWebviewerExtension.postMessage(
     JSON.stringify({ type: "page loaded" })
