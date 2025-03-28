@@ -20,7 +20,7 @@
 
   function initXano(url, hash, channelName) {
     client = new XanoClient({
-      baseUrl: url,
+      instanceBaseUrl: url,
       realtimeConnectionHash: hash,
     });
 
@@ -41,19 +41,18 @@
       if (msgFromApp.type === "initializeXano") {
         initXano(msgFromApp.url, msgFromApp.hash, msgFromApp.channelName);
 
-        channel.on("message", (message) => {
-          console.log(message);
+        channel.on(function(action) {
           ThunkableWebviewerExtension.postMessage(
             JSON.stringify({
-              type: "message",
-              response: message,
+              type: "response",
+              response: action,
             })
           );
         });
       }
 
       if (msgFromApp.type === "send") {
-        channel.send(msgFromApp.msg);
+        channel.message({ message: msgFromApp.msg});
       }
     } catch (e) {
       console.error(e);
