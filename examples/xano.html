@@ -24,7 +24,7 @@
       realtimeConnectionHash: hash,
     });
 
-    channel = client.realtime.channel(channelName);
+    channel = client.channel(channelName);
   }
 
   ThunkableWebviewerExtension.receiveMessage(function (message, callback) {
