@@ -42,6 +42,7 @@
         initXano(msgFromApp.url, msgFromApp.hash, msgFromApp.channelName);
 
         channel.on(function(action) {
+          console.log("Got Something" + action);
           ThunkableWebviewerExtension.postMessage(
             JSON.stringify({
               type: "response",
@@ -52,6 +53,7 @@
       }
 
       if (msgFromApp.type === "send") {
+        console.log("sending" + msgFromApp.msg);
         channel.message({ message: msgFromApp.msg});
       }
     } catch (e) {
