@@ -42,11 +42,12 @@
         initXano(msgFromApp.url, msgFromApp.hash, msgFromApp.channelName);
 
         channel.on(function(action) {
-          console.log("Got Something" + JSON.parse(action));
+          let xanoAction = JSON.parse(action)
+          console.log("Got Something" + xanoAction.payload.data);
           ThunkableWebviewerExtension.postMessage(
             JSON.stringify({
               type: "response",
-              response: JSON.parse(action),
+              response: xanoAction.payload.data,
             })
           );
         });
@@ -54,7 +55,7 @@
 
       if (msgFromApp.type === "send") {
         console.log("sending" + msgFromApp.msg);
-        channel.message({ message: msgFromApp.msg});
+        channel.message({ message: "hello world"}, {authenticated: false});
       }
     } catch (e) {
       console.error(e);
