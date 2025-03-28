@@ -42,12 +42,11 @@
         initXano(msgFromApp.url, msgFromApp.hash, msgFromApp.channelName);
 
         channel.on(function(action) {
-          let xanoAction = JSON.parse(action)
-          console.log("Got Something" + xanoAction.payload.data);
+          console.log("Got Something" + action.payload.data);
           ThunkableWebviewerExtension.postMessage(
             JSON.stringify({
               type: "response",
-              response: xanoAction.payload.data,
+              response: action.payload.data,
             })
           );
         });
