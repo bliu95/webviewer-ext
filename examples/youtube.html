@@ -73,7 +73,7 @@
             }
           } else if (msgFromApp.type === "changeYoutubeId") {
             if (player) {
-              player.cueVideoById({ videoId: msgFromApp.youtubeId });
+              player.cueVideoById({ videoId: msgFromApp.youtubeId, startSeconds: msgFromApp.startSeconds, endSeconds: msgFromApp.endSeconds });
             }
           }
         } catch (e) {
