@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Teachable Machine Image Model</title>
+    <style>
+        /* Modern, responsive styling */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f4f7f6;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            box-sizing: border-box;
+            height: 100%;
+        }
+        h1 {
+            font-size: 1.4rem;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        button {
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.2s, transform 0.1s;
+            width: 100%;
+            max-width: 300px;
+        }
+        button:active {
+            background-color: #357ABD;
+            transform: scale(0.98);
+        }
+        #webcam-container {
+            margin-top: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        /* Makes the webcam responsive */
+        #webcam-container canvas {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background-color: #e0e0e0; /* Placeholder color before load */
+        }
+        #label-container {
+            margin-top: 25px;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        /* Clean UI cards for the predictions */
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            background: #ffffff;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            font-weight: 600;
+            color: #444;
+            font-size: 1.1rem;
+        }
+        .probability {
+            color: #4A90E2;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Image Classifier</h1>
+    <button type="button" id="start-btn" onclick="init()">Start Camera</button>
+    <div id="webcam-container"></div>
+    <div id="label-container"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+<script type="text/javascript">
+    const URL = "https://teachablemachine.withgoogle.com/models/9f4pUP5L2/";
+
+    let model, webcam, labelContainer, maxPredictions;
+
+    async function init() {
+        // Hide the button to free up screen space
+        document.getElementById("start-btn").style.display = "none";
+
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        const flip = true; 
+        // We initialize at 200x200, but CSS scales it up smoothly
+        webcam = new tmImage.Webcam(200, 200, flip); 
+        await webcam.setup(); 
+        await webcam.play();
+        window.requestAnimationFrame(loop);
+
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+        labelContainer = document.getElementById("label-container");
+        
+        // Setup the UI cards for labels
+        for (let i = 0; i < maxPredictions; i++) { 
+            let div = document.createElement("div");
+            div.className = "label-row";
+            labelContainer.appendChild(div);
+        }
+    }
+
+    async function loop() {
+        webcam.update(); 
+        await predict();
+        window.requestAnimationFrame(loop);
+    }
+
+    async function predict() {
+        const prediction = await model.predict(webcam.canvas);
+        for (let i = 0; i < maxPredictions; i++) {
+            const className = prediction[i].className;
+            // Convert decimal to a clean percentage (e.g., 0.98 -> 98%)
+            const probability = (prediction[i].probability * 100).toFixed(0) + "%";
+            
+            labelContainer.childNodes[i].innerHTML = `
+                <span>${className}</span>
+                <span class="probability">${probability}</span>
+            `;
+        }
+    }
+</script>
+
+</body>
+</html>
