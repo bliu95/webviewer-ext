@@ -108,6 +108,10 @@
 
     let model, webcam, labelContainer, maxPredictions;
 
+    ThunkableWebviewerExtension.postMessage(
+        JSON.stringify({ type: "pageloaded" })
+    );
+
     ThunkableWebviewerExtension.receiveMessage(function(message) {
         if (message.type === 'op-window-direct-response' || message.type === 'op-window-direct-request') {
             return;
