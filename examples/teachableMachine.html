@@ -100,12 +100,27 @@
     <div id="label-container"></div>
 </div>
 
+<script src="https://thunkable.github.io/webviewer-extension/thunkableWebviewerExtension.js" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 <script type="text/javascript">
-    const URL = "https://teachablemachine.withgoogle.com/models/9f4pUP5L2/";
+    let URL = "https://teachablemachine.withgoogle.com/models/9f4pUP5L2/";
 
     let model, webcam, labelContainer, maxPredictions;
+
+    ThunkableWebviewerExtension.receiveMessage(function(message) {
+        if (message.type === 'op-window-direct-response' || message.type === 'op-window-direct-request') {
+            return;
+        }
+        try {
+            const msgFromApp = JSON.parse(message);
+            if (msgFromApp.type === 'setUrl') {
+                URL = msgFromApp.url;
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    });
 
     async function init() {
         // Hide the button to free up screen space
@@ -143,16 +158,21 @@
 
     async function predict() {
         const prediction = await model.predict(webcam.canvas);
+        const results = {};
         for (let i = 0; i < maxPredictions; i++) {
             const className = prediction[i].className;
             // Convert decimal to a clean percentage (e.g., 0.98 -> 98%)
             const probability = (prediction[i].probability * 100).toFixed(0) + "%";
-            
+
             labelContainer.childNodes[i].innerHTML = `
                 <span>${className}</span>
                 <span class="probability">${probability}</span>
             `;
+            results[className] = probability;
         }
+        ThunkableWebviewerExtension.postMessage(
+            JSON.stringify({ type: "prediction", results: results })
+        );
     }
 </script>
 
